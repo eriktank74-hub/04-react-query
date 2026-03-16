@@ -9,31 +9,28 @@ import { fetchMovies } from "../../services/movieService";
 import { useEffect, useState } from "react";
 import type { Movie } from "../../types/movie";
 import ReactPaginate from "react-paginate";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery, keepPreviousData } from "@tanstack/react-query";
 
 function App() {
-  const queryClient = useQueryClient();
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
   const [query, setQuery] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(1);
 
-  const { isPending, isError, data } = useQuery({
-    queryKey: ["movies"],
+  const { isPending, isError, data, } = useQuery({
+    queryKey: ["movies", currentPage, query ], 
     queryFn: () => fetchMovies(query, currentPage),
+    enabled: !!query,
+    placeholderData: keepPreviousData
   });
 
-  const totalPages = data?.totalPages || 1;
-  const movies = data?.movies;
+  const totalPages = data?.total_pages || 1;
+  const movies = data?.results;
 
   useEffect(() => {
-    if (isError) {
+    if (!movies?.length) {
       toast("No movies found for your request.");
     }
-  }, [isError]);
-
-  useEffect(() => {
-    queryClient.invalidateQueries({ queryKey: ["movies"] });
-  }, [query, queryClient, currentPage]);
+  }, [movies]);
 
   const onSelect = (movie: Movie) => {
     setSelectedMovie(movie);
