@@ -18,16 +18,18 @@ function App() {
 
   const { isPending, isError, data, } = useQuery({
     queryKey: ["movies", currentPage, query ], 
-    queryFn: () => {
-      setCurrentPage(1);
-      return fetchMovies(query, currentPage);
-    },
+    queryFn: () => fetchMovies(query, currentPage),
     enabled: !!query,
     placeholderData: keepPreviousData
   });
 
   const totalPages = data?.total_pages || 1;
   const movies = data?.results;
+
+  const onSerch = (query: string) => {
+    setQuery(query);
+    setCurrentPage(1);
+  }
 
   useEffect(() => {
     if (!movies?.length) {
@@ -44,7 +46,7 @@ function App() {
 
   return (
     <div className={css.app}>
-      <SearchBar onSubmit={setQuery}   />
+      <SearchBar onSubmit={onSerch}   />
       {totalPages > 1 && (
         <ReactPaginate
           pageCount={totalPages || 1}
