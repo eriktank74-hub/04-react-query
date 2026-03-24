@@ -18,7 +18,10 @@ function App() {
 
   const { isPending, isError, data, } = useQuery({
     queryKey: ["movies", currentPage, query ], 
-    queryFn: () => fetchMovies(query, currentPage),
+    queryFn: () => {
+      setCurrentPage(1);
+      return fetchMovies(query, currentPage);
+    },
     enabled: !!query,
     placeholderData: keepPreviousData
   });
@@ -41,7 +44,7 @@ function App() {
 
   return (
     <div className={css.app}>
-      <SearchBar onSubmit={setQuery} />
+      <SearchBar onSubmit={setQuery}   />
       {totalPages > 1 && (
         <ReactPaginate
           pageCount={totalPages || 1}
