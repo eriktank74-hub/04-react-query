@@ -16,7 +16,7 @@ function App() {
   const [query, setQuery] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(1);
 
-  const { isPending, isError, data, } = useQuery({
+  const { isPending, isError, data, isSuccess } = useQuery({
     queryKey: ["movies", currentPage, query ], 
     queryFn: () => fetchMovies(query, currentPage),
     enabled: !!query,
@@ -32,10 +32,10 @@ function App() {
   }
 
   useEffect(() => {
-    if (!movies?.length) {
+    if (!movies?.length && isSuccess) {
       toast("No movies found for your request.");
     }
-  }, [movies]);
+  }, [movies, isSuccess]);
 
   const onSelect = (movie: Movie) => {
     setSelectedMovie(movie);
