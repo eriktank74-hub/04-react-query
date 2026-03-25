@@ -26,7 +26,7 @@ function App() {
   const totalPages = data?.total_pages || 1;
   const movies = data?.results;
 
-  const onSerch = (query: string) => {
+  const onSearch = (query: string) => {
     setQuery(query);
     setCurrentPage(1);
   }
@@ -46,7 +46,7 @@ function App() {
 
   return (
     <div className={css.app}>
-      <SearchBar onSubmit={onSerch}   />
+      <SearchBar onSubmit={onSearch}   />
      
       <Toaster />
       {isPending ? (
