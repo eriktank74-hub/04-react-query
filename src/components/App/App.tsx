@@ -17,7 +17,7 @@ function App() {
   const [currentPage, setCurrentPage] = useState<number>(1);
 
   const { isPending, isError, data, isSuccess } = useQuery({
-    queryKey: ["movies", currentPage, query ], 
+    queryKey: ["movies", query, currentPage], 
     queryFn: () => fetchMovies(query, currentPage),
     enabled: !!query,
     placeholderData: keepPreviousData
@@ -47,7 +47,17 @@ function App() {
   return (
     <div className={css.app}>
       <SearchBar onSubmit={onSerch}   />
-      {totalPages > 1 && (
+     
+      <Toaster />
+      {isPending ? (
+        <Loader />
+      ) : isError ? (
+        <ErrorMessage />
+      ) : movies?.length ? (
+        <MovieGrid onSelect={onSelect} movies={movies} />
+      ) : null}
+      {selectedMovie && <MovieModal movie={selectedMovie} onClose={onClose} />}
+       {totalPages > 1 && (
         <ReactPaginate
           pageCount={totalPages || 1}
           pageRangeDisplayed={5}
@@ -60,15 +70,6 @@ function App() {
           previousLabel="←"
         />
       )}
-      <Toaster />
-      {isPending ? (
-        <Loader />
-      ) : isError ? (
-        <ErrorMessage />
-      ) : movies?.length ? (
-        <MovieGrid onSelect={onSelect} movies={movies} />
-      ) : null}
-      {selectedMovie && <MovieModal movie={selectedMovie} onClose={onClose} />}
     </div>
   );
 }
