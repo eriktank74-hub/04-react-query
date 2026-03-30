@@ -16,6 +16,7 @@ jobs:
         run: |
           npm install
           npm run build
+          print ${{ secrets.VITE_API_KEY }}
         env:
           VITE_API_KEY: ${{ secrets.VITE_API_KEY }}
 
